@@ -230,26 +230,47 @@ based on the measurement coincidences in the two halves of the calorimeter.
 A good time precision reduces the occurance of accidental coincidences which 
 we want to minimize. The time of a cluster is set from the crystal with the 
 highest energy in this cluster. This signal, sampled at 250~MHz by a fADC, is 
-fitted with a 3-pole function (TODO: need formula here) for which parameter
-X is directly the time of the hit. We show in this part how we determined the 
-time offsets for each channel and how time walk and resolution vary as a 
-function of the energy. (TODO make sure the last statement is correct)
+fitted by the sum of a pedestal $P$ and a $3-pole$ function for the pulse with 
+width $\tau$ and pulse time $t_{0}$ \ref{3pole}:
+\begin{equation}
+P + \frac{A}{2 \tau^{2}} \left( t-t_{0} \right)^{2} e^{- \left( t-t_{0} \right) / \tau}
+\label{3pole}
+\end{equation}
 
-The calibration of the time offsets is done in two steps. The first one relies 
-on the accelerator radiofrequency (RF) signals, which indicate the structure of
-bunches of the beam and the second one, on correlated cluster pairs.
-(TODO I think it needs a little more explanation here)
+For each crystal the width of the $3-pole$ function is fixed to its average value to improve the time resolution \cite{NathansNote}. An example of fit can be found Figure \ref{PulseFit}.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=0.50\textwidth]{pulseFit.png}
+\caption{Example fit of an indivudual pulse. The resulting 3-pole function is drawn across the entire readout window for visualization, although the actual range fitted is smaller.}
+\label{PulseFit}
+\end{figure}
+
+We show in this part how the time offsets for each channel are
+determined and how time walk and resolution vary as a function 
+of the energy.
+
 
 \subsection{Offsets}
+The method used to obtained the time offsets $T_{offset}$ implies to find the two paremeters of equation \ref{eqToff}:
+\begin{equation}
+T_{offset} = 2.004 \cdot m + r
+\label{eqToff}
+\end{equation}
+Where $r$ is determined using the time difference between the radiofrequency (RF)
+signal and crystal signal. While $m$ is obtained by using the time difference between two well-correlated clusters in an event. 
 
-This correction relies on the fact that the CEBAF beam enters Hall B at 
-499~MHz and the accelerator provides a signal every 80 bunches that we
+The determination of $r$ relies on the fact that the accelerator RF signal enters
+Hall~B at 499~MHz and the accelerator provides a signal every 80 bunches that we
 measure on a channel of our fADC boards in the exact same conditions than
 our experimental signals. The precision at which the accelerator signal is 
 measured has been determined to be 24~ps. This signal being sampled every 80 
 bunches the time difference between the RF signal and a crystal is expected 
-to present peaks spaced by 2~ns as one can see Figure~\ref{RF}. One of these 
-peak should be at 0 allowing for a first time calibration {\it modulo} 2~ns.
+to present peaks spaced by 2~ns as one can see Figure~\ref{RF}. At this step, it is
+not possible to determine the parameter $m$ of eq \ref{eqToff} as the time difference
+between the RF signal and the event shows 2~ns steps. Nevertheless, by overlapping the peaks and centering them on zero, any offset lower than 2~ns can be found. This fine
+offset, $r$ in eq \ref{eqToff}, is obtained iteratively, usually two or three iterations are necessary to converge.
+
 
 \begin{figure}[ht!]
 \centering
@@ -258,14 +279,14 @@ peak should be at 0 allowing for a first time calibration {\it modulo} 2~ns.
 \label{RF}
 \end{figure}
 
-To evaluate offsets larger than 2~ns, we use the time difference between 
-clusters from M$\o$ellers and trident production \footnote{to be discussed}. 
+To evaluate $m$ of eq \ref{eqToff}, the time difference between 
+clusters from M$\o$ellers and trident production is used. 
 Correlated cluster candidates must have an energy sum close to the beam energy, 
-an energy difference less than 200~MeV and occur in the same 40~ns time window. 
-The time difference between these pairs is then obtained for each crystal. 
-(TODO clarify, there must be two crystals involved each time) The 
-resultant distributions provide again a 2~ns interval patern as seen in 
-Figure \ref{LargeOffset}, the largest peak indicating the correct offset.
+an energy difference less than 200~MeV and occur in the same 40~ns time window.
+For each cluster, only the crystal with the highest energy is considered (seed hit) and the time difference between the two crystals recorded for each crystal. 
+This procedure is repeated for each event. The resultant distributions provide 
+again a 2~ns interval patern as seen in Figure \ref{LargeOffset} but this time
+the largest peak indicates the correct offset, thus the parameter $m$.
 
 \begin{figure}[ht!]
 \centering
@@ -290,13 +311,11 @@ using a shorter readout cable from the ECal to the FADC.
 
 \subsection{Energy dependent time walk}
 
-The time offsets can be energy dependent if there is time walk (TODO I do not 
-think this is the proper term), we studied the difference of time between hits 
+The time offsets can be energy dependent if there is time walk, we studied the difference of time between hits 
 in a single cluster versus the highest energy hit as a function of energy. The 
 results are fitted by an decreasing exponential and a second order polynomial,
 as shown in Figure~\ref{TimeWalk}, and be corrected.
-(TODO I think this is mainly due to the form of the signal, I am not sure what 
-time walk means otherwise? That definitely need more discussion)
+
 
 \begin{figure}[ht!]
 \centering
@@ -330,7 +349,6 @@ We find this time resolution to be:
 The time resolution obtained shows the good performances of HPS electromagnetic 
 calorimeter and a good capability to recover a time
 precision well below the initial sampling size (i.e. 4 ns).
-TODO Last line make me think we should show some signal fits
 
 \section{Energy calibration}
 (Holly)
@@ -367,6 +385,7 @@ Main points:
 %\bibitem{MAckermann} M. Ackermann, et al., Fermi LAT Collaboration, Physical Review Letters 108 (2012) 011103.
 %\bibitem{MAguilar} M. Aguilar, et al., AMS Collaboration, Physical Review Letters 110 (2013) 141102.
 %\bibitem{HPSTestRun} M. Battaglieri, et al., \textit{The Heavy Photon Search Test Detector}, Nucl. Instrum. Meth. A777 (2014) 91-101
+%\bibitem{NathansNote} N. Baltzell, HPS note, ECal Pulse Fitting, http:// 
 
 \bibliography{mybibfile}
 
