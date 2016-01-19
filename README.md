@@ -9,4 +9,5 @@ For others, please send your comments to charles@ipno.in2p3.fr.
 For points that would need a discussion, please raise it during a meeting.
 
 TODO: Move the figures to a separate subdirectory instead of dumping everything in one dir.
+
 TODO: Move to github.com/jeffersonlab/HPS-NOTES instead of a personal repo.
